@@ -23,7 +23,7 @@
 #define REFCHAN 1 // reference mcp (photek) channel
 #define SCALEFACTOR 1 // conversion from 200 mV*ps -> fC, assuming 50 ohms
 #define NRGYERR 0
-#define BINNING 25
+#define BINNING 50
 
 int main (int argc, char **argv) {
     // usage
@@ -72,20 +72,25 @@ int main (int argc, char **argv) {
                    /* DT min */-1.2,
                    /* DT max */ -.4);
     float timeval[NCHANS];
+    float amplitudes[NCHANS];
     int quality[NCHANS];
 
     // Open files, open trees and calculate average charge
     for (int iFile = 0; iFile < nDataPoints; iFile++) {
         TFile *file = new TFile(argv[1+2*iFile]);
         TTree *tree = (TTree *) file->Get(TREENAME);
-        tree->SetBranchAddress("tgausroot", &timeval[MAINCHAN]);
+        tree->SetBranchAddress("tgausroot", &timeval);
+        tree->SetBranchAddress("Amplitude", &amplitudes);
         tree->SetBranchAddress("QualityBit", &quality);
 
         // Read all entries and extract values to fill the histograms
         Long64_t nentries = tree->GetEntries();
         for (Long64_t iEntry = 0; iEntry < nentries; iEntry++) {
             tree->GetEntry(iEntry);
-            if (!(quality[MAINCHAN] || quality[REFCHAN])) {
+            // We perform a cut few cuts in addition to the quality bit to remove observed background
+            if (!(quality[MAINCHAN] || quality[REFCHAN]) &&
+                    (amplitudes[REFCHAN] > 0.12 && amplitudes[REFCHAN] < 0.49 && amplitudes[MAINCHAN] > 0.02)) {
+                
                 dtHist[iFile]->Fill(timeval[MAINCHAN] - timeval[REFCHAN]);
             }
         }
