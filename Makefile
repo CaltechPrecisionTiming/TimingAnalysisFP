@@ -16,8 +16,11 @@ TARGET2 = singleDRS4
 SRC2 = singleDRS4.cc
 OBJ2 = $(SRC2:.cc=.o)
 
+TARGET3 = dat2rootCP
+SRC3 = dat2root-13.cc src/Aux.cc
+OBJ3 = $(SRC:.cc=.o)
 
-all : $(TARGET1) $(TARGET2)
+all : $(TARGET1) $(TARGET2) $(TARGET3)
 
 $(TARGET1) : $(OBJ1)
 	$(LD) $(CPPFLAGS) -o $(TARGET1) $(OBJ1) $(LDFLAGS)
@@ -27,6 +30,12 @@ $(TARGET1) : $(OBJ1)
 
 $(TARGET2) : $(OBJ2)
 	$(LD) $(CPPFLAGS) -o $(TARGET2) $(OBJ2) $(LDFLAGS)
+	@echo $@
+	@echo $<
+	@echo $^
+
+$(TARGET1) : $(OBJ3)
+	$(LD) $(CPPFLAGS) -o $(TARGET3) $(OBJ3) $(LDFLAGS)
 	@echo $@
 	@echo $<
 	@echo $^

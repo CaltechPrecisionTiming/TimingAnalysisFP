@@ -8,12 +8,12 @@ LDFLAGS := $(shell root-config --glibs) $(STDLIBDIR) -lMathMore
 
 CPPFLAGS += -g
 
-TARGET1 = analyze_t1058_new
-SRC1 = analyze_t1058_new.cc
+TARGET1 = multipleDRS4
+SRC1 = multipleDRS4.cc
 OBJ1 = $(SRC1:.cc=.o)
 
-TARGET2 = chargeVSenergy
-SRC2 = chargeVSenergy.cc
+TARGET2 = singleDRS4
+SRC2 = singleDRS4.cc
 OBJ2 = $(SRC2:.cc=.o)
 
 
